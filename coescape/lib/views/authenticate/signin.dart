@@ -29,7 +29,7 @@ class _SignInState extends State<SignIn> {
       _isLoading = true;
     });
     try {
-      dynamic result = await widget.authService.signInWithGoogleProvider();
+      dynamic result = await widget.authService.signInWithGoogle(context);
       if (result == null) {
         setState(() {
           _isLoading = false;
@@ -38,15 +38,15 @@ class _SignInState extends State<SignIn> {
         });
       }
     } on Exception catch (e) {
-      if (e.toString().contains("not-hns")) {
+      if (e.toString().contains("sign-in-aborted")) {
         setState(() {
           _isLoading = false;
-          _error = "You must use an HNS-RE2SD account";
+          _error = "Sign in aborted";
         });
-      } else {
+      } else if (e.toString().contains("sign-in-failed")) {
         setState(() {
           _isLoading = false;
-          _error = "Unhandled exception occured, Please try again";
+          _error = "Failed to sign in, Please try again";
         });
       }
     } catch (e) {

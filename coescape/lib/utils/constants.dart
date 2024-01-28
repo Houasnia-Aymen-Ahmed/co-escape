@@ -280,3 +280,21 @@ Widget drawerFooter() => Align(
         ),
       ),
     );
+
+void showSnackBar(BuildContext context, String text, Color color) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.all(20.0),
+      backgroundColor: color,
+      dismissDirection: DismissDirection.startToEnd,
+      elevation: 20.0,
+      content: Text(text),
+      action: SnackBarAction(
+        textColor: Colors.blue[100],
+        label: 'OK',
+        onPressed: () {},
+      ),
+    ),
+  );
+}

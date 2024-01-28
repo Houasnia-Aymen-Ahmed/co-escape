@@ -26,7 +26,7 @@ class _RegisterState extends State<Register> {
 
   void buttonController() async {
     try {
-      dynamic result = await widget.authService.signUpWithGoogleProvider();
+      dynamic result = await widget.authService.signUpWithGoogle(context);
       if (result == null) {
         setState(() {
           _isLoading = false;
@@ -35,16 +35,15 @@ class _RegisterState extends State<Register> {
         });
       }
     } on Exception catch (e) {
-      print(e.toString());
-      if (e.toString().contains("not-hns")) {
+      if (e.toString().contains("sign-up-aborted")) {
         setState(() {
           _isLoading = false;
-          _error = "You must use an HNS-RE2SD account";
+          _error = "Sign up aborted";
         });
-      } else {
+      } else if (e.toString().contains("sign-up-failed")) {
         setState(() {
           _isLoading = false;
-          _error = "Unhandled exception occured, Please try again";
+          _error = "Failed to sign up, Please try again";
         });
       }
     } catch (e) {
