@@ -1,8 +1,10 @@
-import 'package:coescape/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'models/user_handler.dart';
 import 'responsive/responsive_layout.dart';
 import 'services/auth.dart';
@@ -11,10 +13,26 @@ import 'views/wrappers/wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging.onBackgroundMessage(_flutterMessagingBackgroundHandler);
   runApp(
     const App(),
   );
+}
+
+Future<void> _flutterMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  //String? friendMessage = message.data['message'];
+
+  /* await HomeWidget.saveWidgetData<String>(
+    '_textContent',
+    friendMessage ?? "",
+  );
+  await HomeWidget.updateWidget(
+    name: 'AppWidgetProvider',
+    iOSName: 'AppWidgetProvider',
+  ); */
 }
 
 class App extends StatelessWidget {

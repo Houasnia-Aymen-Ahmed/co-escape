@@ -43,11 +43,7 @@ class UserWrapper extends StatelessWidget {
           );
         } else {
           AppUser user = snapshot.data!;
-          return Home(
-            authService: authService,
-            databaseService: databaseService,
-            user: user,
-          );
+          return Home(user: user);
         }
       },
     );

@@ -127,6 +127,7 @@ class AuthService {
         username: username,
         email: user.email!,
         photoURL: user.photoURL!,
+        token: null,
       );
       return _userFromFirebaseUser(user);
     } catch (e) {
@@ -216,6 +217,7 @@ class AuthService {
               username: username,
               email: user.email!,
               photoURL: user.photoURL!,
+              token: null,
             );
             if (context.mounted) {
               // Check if the context is not null and is mounted

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/user.dart';
-import '../services/auth.dart';
-import '../services/databases.dart';
 import '../views/home.dart';
 
 enum ViewType {
@@ -19,18 +17,14 @@ Map<String, WidgetBuilder> generateRoutes() {
 
 Widget buildView(BuildContext context, ViewType viewType) {
   var args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-  var databaseService = args['databaseService'] as DatabaseService;
-  var authService = args['authService'] as AuthService;
+  //var databaseService = args['databaseService'] as DatabaseService;
+  //var authService = args['authService'] as AuthService;
   var user = args['user'] as AppUser;
 
   switch (viewType) {
     // Add your view types here
     case ViewType.home:
-      return Home(
-        databaseService: databaseService,
-        authService: authService,
-        user: user,
-      );
+      return Home(user: user);
     default:
       return Container();
   }

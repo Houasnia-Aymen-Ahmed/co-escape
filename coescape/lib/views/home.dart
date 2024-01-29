@@ -3,18 +3,27 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/auth.dart';
 import '../services/databases.dart';
+import '../services/notif.dart';
 import 'home/drawer.dart';
 
-class Home extends StatelessWidget {
-  final AuthService authService;
-  final DatabaseService databaseService;
+class Home extends StatefulWidget {
   final AppUser user;
-  const Home({
-    super.key,
-    required this.authService,
-    required this.databaseService,
-    required this.user,
-  });
+  Home({super.key, required this.user});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final DatabaseService databaseService = DatabaseService();
+  final NotificationService notificationService = NotificationService();
+  final AuthService authService = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationService.initialize(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +41,24 @@ class Home extends StatelessWidget {
       drawer: BuildDrawer(
         authService: authService,
         databaseService: databaseService,
-        user: user,
+        user: widget.user,
       ),
-      body: const Center(
-        child: Text('Home'),
+      body: Stack(
+        children: [
+          const Center(
+            child: Text('Home'),
+          ),
+          Positioned(
+            bottom: 30,
+            right: 30,
+            child: FloatingActionButton(
+              onPressed: () => notificationService.sendNotif(
+                widget.user.token!,
+                widget.user,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

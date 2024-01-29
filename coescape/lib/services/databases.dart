@@ -17,6 +17,7 @@ class DatabaseService {
     required String username,
     required String email,
     required String photoURL,
+    String? token,
   }) async {
     DocumentReference userDoc = userColl.doc(uid);
     await userDoc.set({
@@ -25,6 +26,7 @@ class DatabaseService {
       'username': username,
       'email': email,
       'photoURL': photoURL,
+      'token': token ?? "token",
     });
   }
 
@@ -65,14 +67,16 @@ class DatabaseService {
     String? username,
     String? email,
     String? photoURL,
+    String? token,
   }) async {
     String usrUid = uid ?? _auth.currentUsr!.uid;
     Map<String, dynamic> map = {
-      "uid": uid,
+      "uid": usrUid,
       "googleId": googleId,
       "username": username,
       "email": email,
       "photoURL": photoURL,
+      "token": token ,
     };
     for (var entry in map.entries) {
       if (entry.value != null) {
@@ -93,6 +97,7 @@ class DatabaseService {
         username: doc["username"] ?? 'username',
         email: doc["email"] ?? "email",
         photoURL: doc["photoURL"] ?? "photoURL",
+        token: doc["token"] ?? "token",
       );
     } else {
       isUserDataExist = false;
@@ -102,6 +107,7 @@ class DatabaseService {
         username: 'username',
         email: "email",
         photoURL: "photoURL",
+        token: "token",
       );
     }
   }

@@ -4,12 +4,14 @@ class AppUser {
   String username;
   String email;
   String photoURL;
+  String? token;
 
   AppUser({
-    required this.uid,
-    required this.googleId,
-    required this.username,
-    required this.email,
-    required this.photoURL,
+    this.uid = '',
+    this.googleId = '',
+    this.username = '',
+    this.email = '',
+    this.photoURL = '',
+    this.token,
   });
 }
