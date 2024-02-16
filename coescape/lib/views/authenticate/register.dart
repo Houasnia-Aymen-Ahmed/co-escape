@@ -1,18 +1,20 @@
-import 'dart:ui';
+import 'package:ascent/views/authenticate/experience_and_documents.dart';
+import 'package:ascent/views/authenticate/pages/startup_or_idea_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sign_in_button/sign_in_button.dart';
-
 import '../../services/auth.dart';
 import '../../utils/constants.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
   final AuthService authService;
+  final String category;
+
   const Register({
     super.key,
     required this.toggleView,
     required this.authService,
+    required this.category,
   });
 
   @override
@@ -20,13 +22,61 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  String _error = "";
-  String? value;
-  bool _isLoading = false;
+  final _registerFormKey = GlobalKey<FormState>();
+  String _error = "", _name = "", _domain = "", _email = "", _password = "";
+  String? _activityField;
+  bool _isLoading = false, _isChecked = false, _obsecureText = true;
+  double elementWidth = 343.0;
 
-  void buttonController() async {
+  void continueBtnCtrl() async {
+    if (_registerFormKey.currentState!.validate()) {
+      if (widget.category == "Assitant" && _activityField == null) {
+        setState(() {
+          _error = "Please select an activity field";
+        });
+        return;
+      } else if (widget.category == "Investor") {
+        widget.authService.signUpWithEmailAndPassword(
+          username: _name,
+          email: _email,
+          password: _password,
+          domain: _domain,
+          userType: widget.category,
+        );
+        return;
+      }
+
+      final Map<String, Widget> categoryRoutes = {
+        "Startup Owner": StartupOrIdeaSelector(
+          info: [_name, _domain, _email, _password],
+        ),
+        "Assitant":
+            ExperienceAndDocuments(info: [_name, _domain, _email, _password]),
+        "Consultant":
+            ExperienceAndDocuments(info: [_name, _domain, _email, _password]),
+      };
+
+      final Widget? destinationPage = categoryRoutes[widget.category];
+
+      if (destinationPage != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destinationPage),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Something went wrong"),
+          ),
+        );
+      }
+    }
+  }
+
+  void googleSignInBtnController() async {
     try {
-      dynamic result = await widget.authService.signUpWithGoogle(context);
+      dynamic result =
+          await widget.authService.signUpWithGoogle(context, _domain);
       if (result == null) {
         setState(() {
           _isLoading = false;
@@ -56,167 +106,305 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: AspectRatio(
-              aspectRatio: 3 / 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.blue[700]!,
-                      Colors.blue[100]!,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    width: 2,
-                    color: Colors.transparent,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15.0,
-                    horizontal: 0.0,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Text(
-                        "Sign up",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 50,
-                          color: Colors.white,
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 75,
+        title: Text(
+          "Sign up",
+          style: GoogleFonts.inter(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 25,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Form(
+              key: _registerFormKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 25.0,
+                      vertical: 10,
+                    ),
+                    child: TextFormField(
+                      cursorColor: const Color(0xFF91919F),
+                      decoration: textInputDecoration.copyWith(
+                        hintText: "Name",
+                        hintStyle: const TextStyle(color: Color(0xFF91919F)),
+                        prefixIcon: const Icon(
+                          Icons.person,
+                          color: Color(0xFF91919F),
                         ),
                       ),
-                      /* Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 20.0,
-                                right: 20.0,
-                              ),
-                              child: dropDownBtn(
-                                hint: "Choose type",
-                                isExpanded: true,
-                                textColor: Colors.white,
-                                onChanged: (String? newValue) {
-                                  setState(() => value = newValue);
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
+                      validator: (val) {
+                        return val!.isEmpty ? "Please enter a Name" : null;
+                      },
+                      onChanged: (val) => setState(
+                        () => _name = val,
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 9.0,
-                                vertical: 8.0,
-                              ),
-                              child: dropDownBtn(
-                                hint: "Choose grade",
-                                isDisabled: false,
-                                isExpanded: true,
-                                textColor: Colors.white,
-                                onChanged: null,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 9.0,
-                                vertical: 8.0,
-                              ),
-                              child: dropDownBtn(
-                                hint: "Choose speciality",
-                                isDisabled: false,
-                                isExpanded: true,
-                                textColor: Colors.white,
-                                onChanged: null,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ), */
-                      Transform.scale(
-                        scale: 1.25,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 50),
-                          child: SignInButton(
-                            Buttons.google,
-                            padding: const EdgeInsets.all(5.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            text: "Sign up with HNS-RE2SD",
-                            onPressed: buttonController,
-                          ),
-                        ),
-                      ),
-                      if (_error != "")
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 275),
-                          child: Text(
-                            _error,
-                            style: TextStyle(
-                              color: Colors.red[900],
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      if (_isLoading)
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(),
-                        ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Already have an account?",
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                            ),
-                          ),
-                          TextButton(
-                            style: ButtonStyle(
-                              overlayColor: MaterialStateProperty.all(
-                                Colors.white.withOpacity(0.1),
-                              ),
-                            ),
-                            onPressed: () => widget.toggleView(),
-                            child: Text(
-                              "Sign In",
-                              style: txt().copyWith(
-                                fontSize: 14.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
+                  if (widget.category == "Startup Owner" ||
+                      widget.category == "Investor")
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25.0,
+                        vertical: 10,
+                      ),
+                      child: TextFormField(
+                        cursorColor: const Color(0xFF91919F),
+                        decoration: textInputDecoration.copyWith(
+                          hintText: "Domain",
+                          hintStyle: const TextStyle(color: Color(0xFF91919F)),
+                          prefixIcon: const Icon(
+                            Icons.domain,
+                            color: Color(0xFF91919F),
+                          ),
+                        ),
+                        validator: (val) {
+                          return val!.isEmpty ? "Please enter a Domain" : null;
+                        },
+                        onChanged: (val) => setState(
+                          () => _domain = val,
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 25.0,
+                      vertical: 10,
+                    ),
+                    child: TextFormField(
+                      cursorColor: const Color(0xFF91919F),
+                      decoration: textInputDecoration.copyWith(
+                        hintText: "Email",
+                        hintStyle: const TextStyle(color: Color(0xFF91919F)),
+                        prefixIcon: const Icon(
+                          Icons.email,
+                          color: Color(0xFF91919F),
+                        ),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "Please enter an Email";
+                        } else if (!val.contains('@')) {
+                          return "Please enter a valid Email";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (val) => setState(
+                        () => _email = val,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 25.0,
+                      vertical: 10,
+                    ),
+                    child: TextFormField(
+                      cursorColor: const Color(0xFF91919F),
+                      decoration: textInputDecoration.copyWith(
+                        hintText: "Password",
+                        hintStyle: const TextStyle(color: Color(0xFF91919F)),
+                        suffixIcon: IconButton(
+                          icon: _obsecureText
+                              ? const Icon(
+                                  Icons.visibility_rounded,
+                                )
+                              : const Icon(
+                                  Icons.visibility_off_rounded,
+                                ),
+                          onPressed: () => setState(
+                            () => _obsecureText = !_obsecureText,
+                          ),
+                          color: const Color(0xFF10C58C),
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.lock,
+                          color: Color(0xFF91919F),
+                        ),
+                      ),
+                      obscureText: _obsecureText,
+                      autocorrect: false,
+                      validator: (val) {
+                        return val!.length < 8
+                            ? "The password must be at least 8 characters long"
+                            : null;
+                      },
+                      onChanged: (val) => setState(
+                        () => _password = val,
+                      ),
+                    ),
+                  ),
+                  if (widget.category == "Assitant")
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25.0,
+                        vertical: 10,
+                      ),
+                      child: dropDownBtn(
+                        items: ["Finance", "Marketing"],
+                        hint: "Select your activity field",
+                        val: _activityField,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _activityField = newValue!;
+                            _error = "";
+                          });
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: CheckboxListTile(
+                value: _isChecked,
+                onChanged: (value) {
+                  setState(() {
+                    _isChecked = value!;
+                  });
+                },
+                checkColor: Colors.white,
+                activeColor: const Color(0xFF10C58C),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "By signing up, you agree to the",
+                      style: GoogleFonts.inter(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text(
+                      "Terms of Service and Privacy Policy",
+                      style: GoogleFonts.inter(
+                        color: const Color(0xFF10C58C),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: elementWidth,
+              child: ElevatedButton(
+                onPressed: () {
+                  continueBtnCtrl();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF10c58c),
+                  minimumSize: Size(elementWidth, 56),
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Continue",
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    const SizedBox(width: 25),
+                    const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Already have an account?",
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                  ),
+                ),
+                TextButton(
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(
+                      Colors.white.withOpacity(0.1),
+                    ),
+                  ),
+                  onPressed: () => widget.toggleView(),
+                  child: Text(
+                    "Sign In",
+                    style: txt().copyWith(
+                      fontSize: 14.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            /* const SizedBox(height: 20),
+            orDivider,
+            const SizedBox(height: 20),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 56,
+                maxWidth: elementWidth,
+              ),
+              child: SignInButton(
+                Buttons.google,
+                padding: const EdgeInsets.all(5.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                text: "Sign up with HNS-RE2SD",
+                onPressed: buttonController,
+              ),
+            ), */
+            if (_error != "")
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: elementWidth),
+                  child: Text(
+                    _error,
+                    style: TextStyle(
+                      color: Colors.red[900],
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            if (_isLoading)
+              const Padding(
+                padding: EdgeInsets.all(15.0),
+                child: CircularProgressIndicator(),
+              ),
+          ],
         ),
       ),
     );

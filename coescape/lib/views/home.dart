@@ -8,7 +8,7 @@ import 'home/drawer.dart';
 
 class Home extends StatefulWidget {
   final AppUser user;
-  Home({super.key, required this.user});
+  const Home({super.key, required this.user});
 
   @override
   State<Home> createState() => _HomeState();

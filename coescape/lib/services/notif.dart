@@ -40,7 +40,7 @@ class NotificationService {
 
   Future<String> getDeviceToken() async {
     String? token = await messaging.getToken();
-    DatabaseService().updateUserSpecificData(token: token);
+    DatabaseService().updateUserData(token: token);
     return token!;
   }
 

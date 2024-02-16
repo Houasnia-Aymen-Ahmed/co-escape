@@ -6,9 +6,11 @@ import 'register.dart';
 
 class Authenticate extends StatefulWidget {
   final AuthService authService;
+  final String category;
   const Authenticate({
     super.key,
     required this.authService,
+    required this.category,
   });
 
   @override
@@ -22,33 +24,15 @@ class _AuthenticateState extends State<Authenticate> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "App Name",
-          style: TextStyle(
-            fontSize: 50,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.blue[200],
-        elevation: 20,
-        shadowColor: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
-        toolbarHeight: 150,
-      ),
-      body: showSignIn
-          ? SignIn(
-              toggleView: toggleView,
-              authService: widget.authService,
-            )
-          : Register(
-              toggleView: toggleView,
-              authService: widget.authService,
-            ),
-    );
+    return !showSignIn
+        ? SignIn(
+            toggleView: toggleView,
+            authService: widget.authService,
+          )
+        : Register(
+            toggleView: toggleView,
+            authService: widget.authService,
+            category: widget.category,
+          );
   }
 }

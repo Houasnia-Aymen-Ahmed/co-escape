@@ -1,3 +1,4 @@
+import 'package:ascent/views/authenticate/category_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,7 +6,6 @@ import '../../models/user_handler.dart';
 import '../../services/auth.dart';
 import '../../services/databases.dart';
 
-import '../authenticate/authenticate.dart';
 import 'user_wrapper.dart';
 
 class Wrapper extends StatelessWidget {
@@ -18,7 +18,10 @@ class Wrapper extends StatelessWidget {
     return Consumer<UserHandler?>(
       builder: (context, user, _) {
         if (user == null) {
-          return Authenticate(authService: authService);
+          return CategorySelector(
+            authService: authService,
+            databaseService: databaseService,
+          );
         } else {
           return UserWrapper(
             user: user,

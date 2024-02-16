@@ -47,28 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyATElHOJnvZTkE0Jp3praLOCJfjDqsaeMw',
-    appId: '1:546565231416:web:61c35fe3fdcd260b9d67cd',
-    messagingSenderId: '546565231416',
-    projectId: 'co-escape-app',
-    authDomain: 'co-escape-app.firebaseapp.com',
-    storageBucket: 'co-escape-app.appspot.com',
+    apiKey: 'AIzaSyAQh1DFkhPQmxrBt6TvD2ooNUsEfTGC1CA',
+    appId: '1:645189966226:web:5ee540d825d1f2d1e4c94b',
+    messagingSenderId: '645189966226',
+    projectId: 'ascent-21a21',
+    authDomain: 'ascent-21a21.firebaseapp.com',
+    storageBucket: 'ascent-21a21.appspot.com',
+    measurementId: 'G-P7E7D71P6E',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyChmiDYjCrV6_Y_utevrVzJ-NmBYXnVO9Q',
-    appId: '1:546565231416:android:47a2ce5db8ae678c9d67cd',
-    messagingSenderId: '546565231416',
-    projectId: 'co-escape-app',
-    storageBucket: 'co-escape-app.appspot.com',
+    apiKey: 'AIzaSyDcnHpj8EeQetCDRz4FrOiMQhssyK_zV3Q',
+    appId: '1:645189966226:android:14216fe2eb08ec3be4c94b',
+    messagingSenderId: '645189966226',
+    projectId: 'ascent-21a21',
+    storageBucket: 'ascent-21a21.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCA85mWlercvfoRbTUufajc4eeLhHfFOxE',
-    appId: '1:546565231416:ios:f9dcdd5b629d96199d67cd',
-    messagingSenderId: '546565231416',
-    projectId: 'co-escape-app',
-    storageBucket: 'co-escape-app.appspot.com',
-    iosBundleId: 'com.gofin.coescape',
+    apiKey: 'AIzaSyAIyubDJXdvuYJRm_CEI_RqjBaK4B3h9hg',
+    appId: '1:645189966226:ios:19b988d1413cb892e4c94b',
+    messagingSenderId: '645189966226',
+    projectId: 'ascent-21a21',
+    storageBucket: 'ascent-21a21.appspot.com',
+    iosBundleId: 'com.gofin.ascent',
   );
 }

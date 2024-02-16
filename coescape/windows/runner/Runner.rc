@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.gofin" "\0"
-            VALUE "FileDescription", "coescape" "\0"
+            VALUE "FileDescription", "ascent" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "coescape" "\0"
+            VALUE "InternalName", "ascent" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.gofin. All rights reserved." "\0"
-            VALUE "OriginalFilename", "coescape.exe" "\0"
-            VALUE "ProductName", "coescape" "\0"
+            VALUE "OriginalFilename", "ascent.exe" "\0"
+            VALUE "ProductName", "ascent" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

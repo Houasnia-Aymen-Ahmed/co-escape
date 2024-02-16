@@ -23,21 +23,10 @@ void main() async {
 
 Future<void> _flutterMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  //String? friendMessage = message.data['message'];
-
-  /* await HomeWidget.saveWidgetData<String>(
-    '_textContent',
-    friendMessage ?? "",
-  );
-  await HomeWidget.updateWidget(
-    name: 'AppWidgetProvider',
-    iOSName: 'AppWidgetProvider',
-  ); */
 }
 
 class App extends StatelessWidget {
   const App({super.key});
-
   @override
   Widget build(BuildContext context) {
     return StreamProvider<UserHandler?>.value(

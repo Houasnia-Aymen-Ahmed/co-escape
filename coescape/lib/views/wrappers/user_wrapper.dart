@@ -19,11 +19,6 @@ class UserWrapper extends StatelessWidget {
     required this.authService,
   });
 
-  Future<Map<String, dynamic>> getData() async {
-    // Get data and return it
-    return {};
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AppUser>(

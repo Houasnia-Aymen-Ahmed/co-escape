@@ -14,10 +14,10 @@ TextStyle txt() {
   );
 }
 
-OutlineInputBorder outLineBorder() => OutlineInputBorder(
+OutlineInputBorder outLineBorder({Color? color}) => OutlineInputBorder(
       borderRadius: BorderRadius.circular(15),
       borderSide: BorderSide(
-        color: Colors.blue[900]!,
+        color: color ?? const Color(0xFFF1F1FA),
         width: 1.0,
         style: BorderStyle.solid,
       ),
@@ -27,13 +27,75 @@ final textInputDecoration = InputDecoration(
   hintText: 'Module Name',
   hintStyle: GoogleFonts.poppins(
     fontSize: 15,
-    color: Colors.black38,
+    color: Colors.white,
   ),
-  filled: true,
+  filled: false,
   border: outLineBorder(),
   enabledBorder: outLineBorder(),
   focusedBorder: outLineBorder(),
 );
+
+final orDivider = Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Container(
+      height: 1,
+      width: 100,
+      color: Colors.grey,
+    ),
+    Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Text(
+        "OR",
+        style: GoogleFonts.poppins(
+          color: Colors.black,
+        ),
+      ),
+    ),
+    Container(
+      height: 1,
+      width: 100,
+      color: Colors.grey,
+    ),
+  ],
+);
+
+void showToast(String message, {gravity = ToastGravity.CENTER}) =>
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: gravity,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+
+Widget showHeading(String headingText) {
+  return Row(
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+        child: Container(
+          width: 4,
+          height: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFF10c58c),
+          ),
+        ),
+      ),
+      Text(
+        headingText,
+        style: GoogleFonts.poppins(
+          fontSize: 22,
+          fontWeight: FontWeight.normal,
+          color: const Color(0xFF10c58c),
+        ),
+      ),
+    ],
+  );
+}
 
 userAccountDrawerHeader({
   required String username,
@@ -145,29 +207,21 @@ String? capitalizeWords(String? input) {
 
 DropdownButtonFormField<String> dropDownBtn({
   required hint,
-  bool isDisabled = false,
-  bool? isExpanded,
-  bool? filled = false,
+  required items,
   String? val,
-  Color? textColor,
   void Function(String?)? onChanged,
   String? Function(String?)? validator,
 }) {
-  dynamic items = ["list of items"];
-
   return DropdownButtonFormField<String>(
-    padding: const EdgeInsets.all(8.0),
     elevation: 16,
-    isExpanded: isExpanded ?? false,
-    dropdownColor: Colors.blue[100],
-    borderRadius: BorderRadius.circular(15),
+    dropdownColor: const Color(0xFF10C58C),
+    borderRadius: BorderRadius.circular(16),
     value: val,
     decoration: InputDecoration(
-      filled: filled,
+      filled: false,
       hintText: hint,
-      hintStyle: GoogleFonts.poppins(
-        fontSize: 15,
-        color: isDisabled ? Colors.black38 : Colors.blue[900],
+      hintStyle: const TextStyle(
+        color: Color(0xFF91919F),
       ),
       border: outLineBorder(),
       focusedBorder: outLineBorder(),
@@ -186,7 +240,7 @@ DropdownButtonFormField<String> dropDownBtn({
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: textColor ?? Colors.black,
+            color: Colors.black,
           ),
         ),
       );
@@ -216,7 +270,6 @@ void showLoadingDialog(
     },
   );
 }
-
 
 void showDialogBox(
   BuildContext context,
@@ -254,11 +307,11 @@ void showDialogBox(
   );
 }
 
-Future<bool?> infoTost(String msg) async {
+Future<bool?> infoToast(String msg, {gravity = ToastGravity.CENTER}) async {
   Fluttertoast.showToast(
     msg: msg,
     toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.CENTER,
+    gravity: gravity,
     fontSize: 20.0,
     backgroundColor: Colors.blue[700],
     textColor: Colors.white,
