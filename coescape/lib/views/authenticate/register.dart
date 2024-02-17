@@ -23,7 +23,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _registerFormKey = GlobalKey<FormState>();
-  String _error = "", _name = "", _domain = "", _email = "", _password = "";
+  String _error = "", _username = "", _domain = "", _email = "", _password = "";
   String? _activityField;
   bool _isLoading = false, _isChecked = false, _obsecureText = true;
   double elementWidth = 343.0;
@@ -37,23 +37,33 @@ class _RegisterState extends State<Register> {
         return;
       } else if (widget.category == "Investor") {
         widget.authService.signUpWithEmailAndPassword(
-          username: _name,
+          username: _username,
           email: _email,
           password: _password,
           domain: _domain,
           userType: widget.category,
         );
+        Navigator.popUntil(context, (route) => route.isFirst);
         return;
       }
 
+      final Map<String, String> info = {
+        "username": _username,
+        "domain": _domain,
+        "email": _email,
+        "password": _password,
+        "userType": widget.category,
+        "activityField": _activityField ?? ""
+      };
       final Map<String, Widget> categoryRoutes = {
-        "Startup Owner": StartupOrIdeaSelector(
-          info: [_name, _domain, _email, _password],
-        ),
-        "Assitant":
-            ExperienceAndDocuments(info: [_name, _domain, _email, _password]),
-        "Consultant":
-            ExperienceAndDocuments(info: [_name, _domain, _email, _password]),
+        "Startup Owner": StartupOrIdeaSelector(info: info),
+        "Assitant": ExperienceAndDocuments(info: info),
+        "Consultant": ExperienceAndDocuments(info: {
+          "username": _username,
+          "email": _email,
+          "password": _password,
+          "userType": widget.category,
+        }),
       };
 
       final Widget? destinationPage = categoryRoutes[widget.category];
@@ -137,7 +147,7 @@ class _RegisterState extends State<Register> {
                     child: TextFormField(
                       cursorColor: const Color(0xFF91919F),
                       decoration: textInputDecoration.copyWith(
-                        hintText: "Name",
+                        hintText: "Username",
                         hintStyle: const TextStyle(color: Color(0xFF91919F)),
                         prefixIcon: const Icon(
                           Icons.person,
@@ -145,10 +155,12 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                       validator: (val) {
-                        return val!.isEmpty ? "Please enter a Name" : null;
+                        return val!.isEmpty ? "Please enter a Username" : null;
                       },
                       onChanged: (val) => setState(
-                        () => _name = val,
+                        () {
+                          _username = val;
+                        },
                       ),
                     ),
                   ),

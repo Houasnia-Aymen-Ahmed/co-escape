@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user.dart';
+import '../models/users/assistant_user.dart';
+import '../models/users/consultant_user.dart';
 import '../models/users/investors_user.dart';
 
+import '../models/users/startup_owner.dart';
 import 'auth.dart';
 
 class DatabaseService {
@@ -108,10 +111,12 @@ class DatabaseService {
     required String username,
     required String email,
     required String photoURL,
-    required String domain,
     required String? googleId,
     required String? token,
     required String fieldOfAssist,
+    required int? experienceAge,
+    required String diplomaPath,
+    required String cvPath,
   }) async {
     DocumentReference assistantDoc = assistantColl.doc(uid);
     await assistantDoc.set({
@@ -120,42 +125,67 @@ class DatabaseService {
       'username': username,
       'email': email,
       'photoURL': photoURL,
-      'domain': domain,
       'googleId': googleId,
       'token': token,
       'fieldOfAssist': fieldOfAssist,
+      'experienceAge': experienceAge,
+      'diplomaPath': diplomaPath,
+      'cvPath': cvPath,
     });
   }
 
-  /* Future updateUserData({
-    String? uid,
-    String? usertype,
-    String? username,
-    String? email,
-    String? photoURL,
-    String? domain,
-    String? googleId,
-    String? token,
+  Future createConsultantUserData({
+    required String uid,
+    required String usertype,
+    required String username,
+    required String email,
+    required String photoURL,
+    required String? googleId,
+    required String? token,
+    required String diplomaPath,
+    required String cvPath,
+    required int experienceAge,
   }) async {
-    String usrUid = uid ?? _auth.currentUsr!.uid;
-    Map<String, dynamic> map = {
-      "uid": usrUid,
-      "usertype": usertype,
-      "username": username,
-      "email": email,
-      "photoURL": photoURL,
-      "domain": domain,
-      "googleId": googleId,
-      "token": token,
-    };
-    for (var entry in map.entries) {
-      if (entry.value != null) {
-        await userColl.doc(usrUid).update({
-          entry.key.toString(): entry.value,
-        });
-      }
+    DocumentReference consultantDoc = consultantColl.doc(uid);
+    await consultantDoc.set({
+      'uid': uid,
+      'usertype': usertype,
+      'username': username,
+      'email': email,
+      'photoURL': photoURL,
+      'googleId': googleId,
+      'token': token,
+      'diplomaPath': diplomaPath,
+      'cvPath': cvPath,
+      'experienceAge': experienceAge,
+    });
+  }
+
+  Future<List<DocumentSnapshot>> getStartupsWithMarketingPlan() async {
+    try {
+      QuerySnapshot startupsSnapshot = await startupOwnerColl
+          .where('marketingStrategyAndBMC', isNotEqualTo: null)
+          .get();
+
+      return startupsSnapshot.docs;
+    } catch (e) {
+      print("Error getting startups with marketing plan: $e");
+      return [];
     }
-  } */
+  }
+
+  Future<List<DocumentSnapshot>> getStartupsWithoutMarketingPlan() async {
+    try {
+      QuerySnapshot startupsSnapshot = await startupOwnerColl
+          .where('marketingStrategyAndBMC', isEqualTo: null)
+          .get();
+
+      return startupsSnapshot.docs;
+    } catch (e) {
+      print("Error getting startups without marketing plan: $e");
+      return [];
+    }
+  }
 
   Future updateUserData({
     String? uid,
@@ -168,7 +198,6 @@ class DatabaseService {
     String? token,
   }) async {
     String usrUid = uid ?? _auth.currentUsr!.uid;
-
     Map<String, dynamic> map = {
       "uid": usrUid,
       "usertype": usertype,
@@ -217,7 +246,7 @@ class DatabaseService {
     };
     for (var entry in map.entries) {
       if (entry.value != null) {
-        await userColl.doc(usrUid).update({
+        await startupOwnerColl.doc(usrUid).update({
           entry.key.toString(): entry.value,
         });
       }
@@ -262,10 +291,12 @@ class DatabaseService {
     String? username,
     String? email,
     String? photoURL,
-    String? domain,
     String? googleId,
     String? token,
     String? fieldOfAssist,
+    String? experienceAge,
+    String? diplomaPath,
+    String? cvPath,
   }) async {
     String usrUid = uid ?? _auth.currentUsr!.uid;
     Map<String, dynamic> map = {
@@ -274,14 +305,50 @@ class DatabaseService {
       "username": username,
       "email": email,
       "photoURL": photoURL,
-      "domain": domain,
       "googleId": googleId,
       "token": token,
       "fieldOfAssist": fieldOfAssist,
+      "experienceAge": experienceAge,
+      "diplomaPath": diplomaPath,
+      "cvPath": cvPath,
     };
     for (var entry in map.entries) {
       if (entry.value != null) {
         await assistantColl.doc(usrUid).update({
+          entry.key.toString(): entry.value,
+        });
+      }
+    }
+  }
+
+  Future updateConsultantUserData({
+    String? uid,
+    String? usertype,
+    String? username,
+    String? email,
+    String? photoURL,
+    String? googleId,
+    String? token,
+    String? diplomaPath,
+    String? cvPath,
+    String? experienceAge,
+  }) async {
+    String usrUid = uid ?? _auth.currentUsr!.uid;
+    Map<String, dynamic> map = {
+      "uid": usrUid,
+      "usertype": usertype,
+      "username": username,
+      "email": email,
+      "photoURL": photoURL,
+      "googleId": googleId,
+      "token": token,
+      'diplomaPath': diplomaPath,
+      'cvPath': cvPath,
+      'experienceAge': experienceAge,
+    };
+    for (var entry in map.entries) {
+      if (entry.value != null) {
+        await consultantColl.doc(usrUid).update({
           entry.key.toString(): entry.value,
         });
       }
@@ -315,9 +382,8 @@ class DatabaseService {
     }
   }
 
-  /* StartupOwner _currentStartupOwnerFromSnapshots(DocumentSnapshot snapshot) {
+  StartupOwner _currentStartupOwnerFromSnapshots(DocumentSnapshot snapshot) {
     if (snapshot.exists) {
-      isUserDataExist = true;
       Map<String, dynamic> doc = snapshot.data() as Map<String, dynamic>;
       return StartupOwner(
         uid: doc["uid"] ?? 'uid',
@@ -327,12 +393,9 @@ class DatabaseService {
         domain: doc["domain"] ?? 'domain',
         googleId: doc["googleId"] ?? 'googleId',
         token: doc["token"] ?? "token",
-        hasInvestor: doc["hasInvestor"] ?? false,
-        marketingStrategyAndBMC:
-            doc["marketingStrategyAndBMC"] ?? 'marketingStrategyAndBMC',
+        isStartup: doc["isStartup"] ?? false,
       );
     } else {
-      isUserDataExist = false;
       return StartupOwner(
         uid: 'uid',
         username: 'username',
@@ -341,11 +404,10 @@ class DatabaseService {
         domain: 'domain',
         googleId: 'googleId',
         token: "token",
-        hasInvestor: false,
-        marketingStrategyAndBMC: 'marketingStrategyAndBMC',
+        isStartup: false,
       );
     }
-  } */
+  }
 
   InvestorUser _currentInvestorUserFromSnapshots(DocumentSnapshot snapshot) {
     if (snapshot.exists) {
@@ -376,43 +438,81 @@ class DatabaseService {
     }
   }
 
-  /* AssistantUser _currentAssistantUserFromSnapshots(DocumentSnapshot snapshot) {
+  AssistantUser _currentAssistantUserFromSnapshots(DocumentSnapshot snapshot) {
     if (snapshot.exists) {
       Map<String, dynamic> doc = snapshot.data() as Map<String, dynamic>;
       return AssistantUser(
         uid: doc["uid"] ?? 'uid',
+        usertype: doc["usertype"] ?? 'usertype',
         username: doc["username"] ?? 'username',
         email: doc["email"] ?? "email",
         photoURL: doc["photoURL"] ?? "photoURL",
-        domain: doc["domain"] ?? 'domain',
         googleId: doc["googleId"] ?? 'googleId',
         token: doc["token"] ?? "token",
         fieldOfAssist: doc["fieldOfAssist"] ?? 'fieldOfAssist',
+        experienceAge: doc["experienceAge"] ?? 0,
+        diplomaPath: doc["diplomaPath"] ?? 'diplomaPath',
+        cvPath: doc["cvPath"] ?? 'cvPath',
       );
     } else {
       return AssistantUser(
         uid: 'uid',
+        usertype: 'usertype',
         username: 'username',
         email: "email",
         photoURL: "photoURL",
-        domain: 'domain',
         googleId: 'googleId',
         token: "token",
         fieldOfAssist: 'fieldOfAssist',
+        experienceAge: 0,
+        diplomaPath: 'diplomaPath',
+        cvPath: 'cvPath',
       );
     }
-  } */
+  }
+
+  ConsultantUser _currentConsultantUserFromSnapshots(
+      DocumentSnapshot snapshot) {
+    if (snapshot.exists) {
+      Map<String, dynamic> doc = snapshot.data() as Map<String, dynamic>;
+      return ConsultantUser(
+        uid: doc["uid"] ?? 'uid',
+        usertype: doc["usertype"] ?? 'usertype',
+        username: doc["username"] ?? 'username',
+        email: doc["email"] ?? "email",
+        photoURL: doc["photoURL"] ?? "photoURL",
+        googleId: doc["googleId"] ?? 'googleId',
+        token: doc["token"] ?? "token",
+        diplomaPath: doc["diplomaPath"] ?? 'diplomaPath',
+        cvPath: doc["cvPath"] ?? 'cvPath',
+        experienceAge: doc["experienceAge"] ?? 0,
+      );
+    } else {
+      return ConsultantUser(
+        uid: 'uid',
+        usertype: 'usertype',
+        username: 'username',
+        email: "email",
+        photoURL: "photoURL",
+        googleId: 'googleId',
+        token: "token",
+        diplomaPath: 'diplomaPath',
+        cvPath: 'cvPath',
+        experienceAge: 0,
+      );
+    }
+  }
 
   Stream<AppUser> getUserDataStream(String userId) {
     return userColl.doc(userId).snapshots().map(_currentUserFromSnapshots);
   }
 
-  /* Stream<StartupOwner> getStartupOwnerDataStream(String userId) {
+  Stream<StartupOwner> getStartupOwnerDataStream(String userId) {
     return userColl
         .doc(userId)
         .snapshots()
         .map(_currentStartupOwnerFromSnapshots);
-  } */
+  }
 
   Stream<InvestorUser> getInvestorUserDataStream(String userId) {
     return investorColl
@@ -421,10 +521,17 @@ class DatabaseService {
         .map(_currentInvestorUserFromSnapshots);
   }
 
-  /* Stream<AssistantUser> getAssistantUserDataStream(String userId) {
+  Stream<AssistantUser> getAssistantUserDataStream(String userId) {
     return userColl
         .doc(userId)
         .snapshots()
         .map(_currentAssistantUserFromSnapshots);
-  } */
+  }
+
+  Stream<ConsultantUser> getConsultantUserDataStream(String userId) {
+    return userColl
+        .doc(userId)
+        .snapshots()
+        .map(_currentConsultantUserFromSnapshots);
+  }
 }

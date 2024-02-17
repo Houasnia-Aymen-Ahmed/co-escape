@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StartupOrIdeaSelector extends StatefulWidget {
-  final List<String?> info;
+  final Map<String, String> info;
   const StartupOrIdeaSelector({super.key, required this.info});
 
   @override

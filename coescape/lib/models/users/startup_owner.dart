@@ -1,9 +1,9 @@
 import 'package:ascent/models/user.dart';
 
 class StartupOwner extends AppUser {
-  final bool hasInvestor;
-  final String? financeStrategy;
-  final String marketingStrategyAndBMC;
+  final bool isStartup;
+  final Map<String, dynamic>? startup;
+  final Map<String, dynamic>? idea;
   StartupOwner({
     required super.uid,
     required super.username,
@@ -12,8 +12,8 @@ class StartupOwner extends AppUser {
     required super.domain,
     required super.googleId,
     required super.token,
-    required this.hasInvestor,
-    required this.financeStrategy,
-    required this.marketingStrategyAndBMC,
+    required this.isStartup,
+    this.startup,
+    this.idea,
   });
 }

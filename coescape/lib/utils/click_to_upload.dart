@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/storage.dart';
 
 class ClickToUpload extends StatefulWidget {
-  final Function(bool) onErrorChanged;
-  const ClickToUpload({super.key, required this.onErrorChanged});
+  const ClickToUpload({super.key});
 
   @override
   State<ClickToUpload> createState() => _ClickToUploadState();
@@ -12,7 +11,8 @@ class ClickToUpload extends StatefulWidget {
 
 class _ClickToUploadState extends State<ClickToUpload> {
   late FirebaseStorageService storageService;
-  bool isLoading = false, isError = false;
+  bool isLoading = false;
+  bool? isError;
 
   @override
   void initState() {
@@ -42,7 +42,8 @@ class _ClickToUploadState extends State<ClickToUpload> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: Row(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Row(
                     children: [
@@ -55,7 +56,6 @@ class _ClickToUploadState extends State<ClickToUpload> {
                           setState(() {
                             isLoading = false;
                             isError = value;
-                            widget.onErrorChanged(value);
                           });
                         },
                         icon: Container(
@@ -84,6 +84,19 @@ class _ClickToUploadState extends State<ClickToUpload> {
                       )
                     ],
                   ),
+                  if (!isLoading && isError != null)
+                    Row(children: [
+                      Icon(
+                        isError! ? Icons.error : Icons.check_circle,
+                        color: isError! ? Colors.red : Colors.green,
+                      ),
+                      Text(
+                        isError! ? "Error" : "Success",
+                        style: TextStyle(
+                          color: isError! ? Colors.red : Colors.green,
+                        ),
+                      )
+                    ])
                 ],
               ),
             ),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -40,13 +38,6 @@ class AuthService {
       return null;
     }
   }
-  // * This function is responsible for signing up a user with email and password
-  // * It takes in the user's name, email, password, user type, and optional modules, grade, and speciality
-  // * It creates a new user with the provided email and password, then updates the user data in the database
-  // * If the user type is 'teacher', it updates the teacher data with the provided modules
-  // * If the user type is 'student', it updates the student data with the provided grade and speciality, and also updates modules with criteria
-  // * Finally, it returns the user from the Firebase user.
-  // * This function is used in the sign up screen.
 
   Future signUpWithEmailAndPassword({
     required String username,
@@ -56,6 +47,13 @@ class AuthService {
     required String userType,
     String? activityField,
     String? marketingStrategyAndBMC,
+    String? diplomaPath,
+    String? cvPath,
+    bool? isStartup = false,
+    String? idea,
+    String? ideaPresetationPath,
+    int? experienceConsultant,
+    int? experienceAssistant,
     bool? hasInvestor,
   }) async {
     try {
@@ -63,41 +61,51 @@ class AuthService {
         email: email,
         password: password,
       );
-
       User? user = result.user;
-      log("message");
       await DatabaseService().createUserData(
         username: username,
         uid: user!.uid,
         email: user.email!,
         domain: domain,
-        photoURL: user.photoURL!,
+        photoURL: user.photoURL ?? "",
         googleId: null,
         token: null,
       );
-      log("yo");
 
-      /* if (userType == 'Startup Owner') {
-        await DatabaseService().createStartupOwnerData(
-          username: username,
-          uid: user.uid,
-          email: user.email!,
-          domain: domain,
-          photoURL: user.photoURL!,
-          googleId: null,
-          token: null,
-          marketingStrategyAndBMC: marketingStrategyAndBMC!,
-          hasInvestor: hasInvestor!,
-        );
-      } else  */
-      if (userType == 'Investor') {
+      if (userType == 'Startup Owner') {
+        if (isStartup!) {
+          await DatabaseService().createStartupOwnerData(
+            username: username,
+            uid: user.uid,
+            email: user.email!,
+            domain: domain,
+            photoURL: user.photoURL!,
+            googleId: null,
+            token: null,
+            marketingStrategyAndBMC: marketingStrategyAndBMC!,
+            hasInvestor: hasInvestor!,
+          );
+        } else {
+          await DatabaseService().createStartupOwnerData(
+            username: username,
+            uid: user.uid,
+            email: user.email!,
+            domain: domain,
+            photoURL: user.photoURL!,
+            googleId: null,
+            token: null,
+            marketingStrategyAndBMC: marketingStrategyAndBMC!,
+            hasInvestor: hasInvestor!,
+          );
+        }
+      } else if (userType == 'Investor') {
         await DatabaseService().createInvestorUserData(
           username: username,
           uid: user.uid,
           usertype: userType,
           email: user.email!,
           domain: domain,
-          photoURL: user.photoURL!,
+          photoURL: user.photoURL ?? "",
           googleId: null,
           token: null,
         );
@@ -107,16 +115,30 @@ class AuthService {
           usertype: userType,
           username: username,
           email: user.email!,
-          domain: domain,
-          photoURL: user.photoURL!,
+          photoURL: user.photoURL ?? "",
           googleId: null,
           token: null,
           fieldOfAssist: activityField!,
+          experienceAge: experienceAssistant!,
+          diplomaPath: diplomaPath!,
+          cvPath: cvPath!,
+        );
+      } else if (userType == 'Consultant') {
+        await DatabaseService().createConsultantUserData(
+          uid: user.uid,
+          usertype: userType,
+          username: username,
+          email: user.email!,
+          photoURL: user.photoURL ?? "",
+          googleId: null,
+          token: null,
+          diplomaPath: diplomaPath!,
+          cvPath: cvPath!,
+          experienceAge: experienceConsultant!,
         );
       } else {
         throw Exception('invalid-user-type');
       }
-
       return _userFromFirebaseUser(user);
     } catch (e) {
       return null;

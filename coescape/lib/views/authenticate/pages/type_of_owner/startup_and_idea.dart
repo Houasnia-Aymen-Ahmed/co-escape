@@ -10,7 +10,7 @@ import 'startup_owner.dart/startup_form.dart';
 
 class StartupAndIdeaView extends StatefulWidget {
   final String formType;
-  final List<String?> info;
+  final Map<String, dynamic> info;
   const StartupAndIdeaView({
     super.key,
     required this.formType,
@@ -41,13 +41,30 @@ class _StartupAndIdeaViewState extends State<StartupAndIdeaView> {
 
   void signUpStartupOwner() {
     if (widget.formType == "startup") {
+      widget.info["hasInvestor"] =
+          otherData!['investor'] == 'Yes' ? true : false;
+      widget.info["hasMarketingPlan"] =
+          otherData!['marketing'] == 'Yes' ? true : false;
       authService.signUpWithEmailAndPassword(
-        username: widget.info[0]!,
-        userType: "Startup Owner",
-        domain: widget.info[1]!,
-        email: widget.info[2]!,
-        password: widget.info[3]!,
-        hasInvestor: otherData?['investor'] == "Yes" ? true : false,
+        username: widget.info["username"]!,
+        email: widget.info["email"]!,
+        password: widget.info["password"]!,
+        domain: widget.info["domain"]!,
+        userType: widget.info["userType"]!,
+        hasInvestor: widget.info['hasInvestor'],
+        marketingStrategyAndBMC: widget.info['hasMarketingPlan'],
+      );
+    } else {
+      widget.info["hasInvestor"] =
+          otherData!['investor'] == 'Yes' ? true : false;
+      authService.signUpWithEmailAndPassword(
+        username: widget.info["username"]!,
+        email: widget.info["email"]!,
+        password: widget.info["password"]!,
+        domain: widget.info["domain"]!,
+        userType: widget.info["userType"]!,
+        hasInvestor: widget.info['hasInvestor'],
+        marketingStrategyAndBMC: widget.info['hasMarketingPlan'],
       );
     }
   }
@@ -84,13 +101,7 @@ class _StartupAndIdeaViewState extends State<StartupAndIdeaView> {
               widget.formType == "startup"
                   ? StartupForm(onFormChanged: handleFormChanged)
                   : IdeaForm(onFormChanged: handleFormChanged),
-              ClickToUpload(
-                onErrorChanged: (value) {
-                  setState(() {
-                    isError = value;
-                  });
-                },
-              ),
+              const ClickToUpload(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(

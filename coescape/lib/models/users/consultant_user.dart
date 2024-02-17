@@ -10,7 +10,6 @@ class ConsultantUser extends AppUser {
     required super.username,
     required super.email,
     required super.photoURL,
-    required super.domain,
     required super.googleId,
     required super.token,
     required this.diplomaPath,

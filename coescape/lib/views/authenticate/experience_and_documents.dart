@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:ascent/utils/click_to_upload.dart';
 import 'package:ascent/utils/constants.dart';
-import 'package:ascent/utils/popups/rejected_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/auth.dart';
+
 class ExperienceAndDocuments extends StatefulWidget {
-  final List<String> info;
+  final Map<String, String> info;
   const ExperienceAndDocuments({super.key, required this.info});
 
   @override
@@ -18,15 +19,18 @@ class _ExperienceAndDocumentsState extends State<ExperienceAndDocuments> {
   final _experienceAndDocsKey = GlobalKey<FormState>();
   final File? diplomaFile = null, cvFile = null;
   int experience = 0;
-  bool _isDiplomaError = false;
-  bool _isCvError = false;
 
   void submitButton(BuildContext context) {
     if (_experienceAndDocsKey.currentState!.validate()) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => const RejectedPopup(),
+      AuthService().signUpWithEmailAndPassword(
+        username: widget.info["username"]!,
+        email: widget.info["email"]!,
+        password: widget.info["password"]!,
+        domain: widget.info["domain"] ?? "",
+        userType: widget.info["userType"]!,
+        activityField: widget.info["activityField"]!,
       );
+      Navigator.popUntil(context, (route) => route.isFirst);
     }
   }
 
@@ -76,52 +80,10 @@ class _ExperienceAndDocumentsState extends State<ExperienceAndDocuments> {
                 ),
                 const SizedBox(height: 50),
                 showHeading("Diploma"),
-                ClickToUpload(
-                  onErrorChanged: (value) {
-                    setState(() {
-                      _isDiplomaError = value;
-                    });
-                  },
-                ),
-                if (_isDiplomaError)
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: elementWidth),
-                      child: Text(
-                        "Please, you must upload your Diploma",
-                        style: TextStyle(
-                          color: Colors.red[900],
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                const ClickToUpload(),
                 const SizedBox(height: 50),
                 showHeading("CV"),
-                ClickToUpload(
-                  onErrorChanged: (value) {
-                    setState(() {
-                      _isCvError = value;
-                    });
-                  },
-                ),
-                if (_isCvError)
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: elementWidth),
-                      child: Text(
-                        "Please, you must upload your CV",
-                        style: TextStyle(
-                          color: Colors.red[900],
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                const ClickToUpload(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
