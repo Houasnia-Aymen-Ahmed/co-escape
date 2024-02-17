@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
-import '../../services/auth.dart';
-import '../../utils/constants.dart';
+import '../../../services/auth.dart';
+import '../../../utils/constants.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../models/user.dart';
-import '../services/auth.dart';
-import '../services/databases.dart';
-import '../services/notif.dart';
-import 'home/drawer.dart';
+import '../../models/user.dart';
+import '../../services/auth.dart';
+import '../../services/databases.dart';
+import '../../services/notif.dart';
+import 'drawer.dart';
 
 class Home extends StatefulWidget {
   final AppUser user;

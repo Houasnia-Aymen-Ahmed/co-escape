@@ -85,18 +85,23 @@ class _ClickToUploadState extends State<ClickToUpload> {
                     ],
                   ),
                   if (!isLoading && isError != null)
-                    Row(children: [
-                      Icon(
-                        isError! ? Icons.error : Icons.check_circle,
-                        color: isError! ? Colors.red : Colors.green,
-                      ),
-                      Text(
-                        isError! ? "Error" : "Success",
-                        style: TextStyle(
-                          color: isError! ? Colors.red : Colors.green,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(children: [
+                        Icon(
+                          isError! ? Icons.error : Icons.check_circle,
+                          color:
+                              isError! ? Colors.red : const Color(0xFF10c58c),
                         ),
-                      )
-                    ])
+                        Text(
+                          isError! ? "Error" : "Success",
+                          style: TextStyle(
+                            color:
+                                isError! ? Colors.red : const Color(0xFF10c58c),
+                          ),
+                        )
+                      ]),
+                    )
                 ],
               ),
             ),

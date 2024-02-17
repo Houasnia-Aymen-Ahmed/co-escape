@@ -5,7 +5,8 @@ import 'package:ascent/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../services/auth.dart';
+import '../../../services/auth.dart';
+import '../../../utils/popups/email_popup.dart';
 
 class ExperienceAndDocuments extends StatefulWidget {
   final Map<String, String> info;
@@ -30,6 +31,18 @@ class _ExperienceAndDocumentsState extends State<ExperienceAndDocuments> {
         userType: widget.info["userType"]!,
         activityField: widget.info["activityField"]!,
       );
+      widget.info["activityField"] != null
+          ? showDialog(
+              context: context,
+              builder: (context) => const EmailPopup(
+                    title: "Assistant",
+                  ))
+          : showDialog(
+              context: context,
+              builder: (context) => const EmailPopup(
+                title: "Consultant",
+              ),
+            );
       Navigator.popUntil(context, (route) => route.isFirst);
     }
   }

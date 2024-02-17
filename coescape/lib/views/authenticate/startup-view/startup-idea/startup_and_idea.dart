@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../services/storage.dart';
-import 'idea_form.dart';
-import 'startup_owner.dart/startup_form.dart';
+import '../forms/idea_form.dart';
+import '../forms/startup_form.dart';
 
 class StartupAndIdeaView extends StatefulWidget {
   final String formType;
@@ -67,6 +67,13 @@ class _StartupAndIdeaViewState extends State<StartupAndIdeaView> {
         marketingStrategyAndBMC: widget.info['hasMarketingPlan'],
       );
     }
+    showDialog(
+      context: context,
+      builder: (context) => const EmailPopup(
+        title: "Startup",
+      ),
+    );
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   @override
@@ -106,10 +113,7 @@ class _StartupAndIdeaViewState extends State<StartupAndIdeaView> {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => const EmailPopup(),
-                    );
+                    signUpStartupOwner();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF10c58c),

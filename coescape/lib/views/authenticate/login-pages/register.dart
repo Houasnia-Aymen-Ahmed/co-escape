@@ -1,9 +1,10 @@
-import 'package:ascent/views/authenticate/experience_and_documents.dart';
-import 'package:ascent/views/authenticate/pages/startup_or_idea_selector.dart';
+import 'package:ascent/utils/popups/email_popup.dart';
+import 'package:ascent/views/authenticate/shared-view/experience_and_documents.dart';
+import 'package:ascent/views/authenticate/startup-view/startup-idea/startup_or_idea_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../services/auth.dart';
-import '../../utils/constants.dart';
+import '../../../services/auth.dart';
+import '../../../utils/constants.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -42,6 +43,12 @@ class _RegisterState extends State<Register> {
           password: _password,
           domain: _domain,
           userType: widget.category,
+        );
+        showDialog(
+          context: context,
+          builder: (context) => const EmailPopup(
+            title: "Investor",
+          ),
         );
         Navigator.popUntil(context, (route) => route.isFirst);
         return;

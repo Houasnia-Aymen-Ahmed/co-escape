@@ -54,6 +54,8 @@ dependencies:
   file_picker: ^6.1.1
   firebase_storage: ^11.6.5
   path: ^1.8.3
+  flutter_native_splash: ^2.3.10
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +64,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icon/logo_icon.png"
+  image_path: "assets/icons/logo_icon.png"
   min_sdk_android: 21
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -74,16 +76,16 @@ flutter_launcher_icons:
 flutter_native_splash:
   android_12:
     image: assets/images/logo.png
-    color: "#86BAEB"
+    color: "#FFFFFF"
     image_dark: assets/images/logo.png
-    color_dark: "#042a49"
+    color_dark: "#FFFFFF"
 
   android: true
   ios: true
   web: false
   image: assets/images/logo.png
-  color: "#86BAEB"
-  color_dark_android: "#042a49"
+  color: "#FFFFFF"
+  color_dark_android: "#FFFFFF"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/auth.dart';
 import '../../services/databases.dart';
-import 'authenticate.dart';
+import 'login-pages/authenticate.dart';
 
 class CategorySelector extends StatelessWidget {
   final AuthService authService;

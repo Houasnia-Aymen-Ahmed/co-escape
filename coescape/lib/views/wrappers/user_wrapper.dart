@@ -1,3 +1,5 @@
+import 'package:ascent/views/users-views/investor_view.dart';
+import 'package:ascent/views/users-views/starup_owner_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/error_pages.dart';
@@ -6,7 +8,9 @@ import '../../models/user.dart';
 import '../../models/user_handler.dart';
 import '../../services/auth.dart';
 import '../../services/databases.dart';
-import '../home.dart';
+import '../home/home.dart';
+import '../users-views/assister_view.dart';
+import '../users-views/consultor_view.dart';
 
 class UserWrapper extends StatelessWidget {
   final UserHandler user;
@@ -38,7 +42,17 @@ class UserWrapper extends StatelessWidget {
           );
         } else {
           AppUser user = snapshot.data!;
-          return Home(user: user);
+          if (user.usertype == "Startup Owner") {
+            return StartupOwnerView(user: user);
+          } else if (user.usertype == "Investor") {
+            return InvestorView(user: user);
+          } else if (user.usertype == "Assitant") {
+            return AssistantView(user: user);
+          } else if (user.usertype == "Consultant") {
+            return ConsultantView(user: user);
+          } else {
+            return Home(user: user);
+          }
         }
       },
     );

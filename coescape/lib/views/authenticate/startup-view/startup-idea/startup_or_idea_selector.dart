@@ -1,4 +1,4 @@
-import 'package:ascent/views/authenticate/pages/type_of_owner/startup_and_idea.dart';
+import 'package:ascent/views/authenticate/startup-view/startup-idea/startup_and_idea.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

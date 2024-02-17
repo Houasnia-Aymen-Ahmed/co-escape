@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../services/auth.dart';
+import '../../../services/auth.dart';
 import 'signin.dart';
 import 'register.dart';
 

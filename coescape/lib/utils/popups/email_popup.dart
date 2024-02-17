@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EmailPopup extends StatefulWidget {
-  const EmailPopup({super.key});
+  final String title;
+  const EmailPopup({super.key, required this.title});
 
   @override
   State<EmailPopup> createState() => _EmailPopupState();
@@ -12,7 +13,6 @@ class _EmailPopupState extends State<EmailPopup>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
-  String title = "";
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _EmailPopupState extends State<EmailPopup>
       position: _offsetAnimation,
       child: AlertDialog(
         title: Text(
-          title,
+          widget.title,
           style: GoogleFonts.inter(
             fontSize: 24,
             color: const Color(0xFF10c58c),
